@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChickTrack - Orders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/chick.png') }}">
+</head>
+<body>
+
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('home') }}">ChickTrack 🐥</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('orders') }}">Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Batches</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Expenses</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    
+    <div class="container mt-5">
+
+        <div class="container mt-5">
+
+    
+    <div class="card shadow-sm rounded mb-4">
+        <div class="card-body bg-light">
+            <h4 class="card-title text-success mb-4">Add New Order</h4>
+            <form id="orderForm" class="row g-3">
+
+                <div class="col-md-4">
+                    <label for="customerName" class="form-label">Customer Name</label>
+                    <input type="text" class="form-control" id="customerName" placeholder="John Doe" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="customerLocation" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="customerLocation" placeholder="Johannesburg" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="customerCell" class="form-label">Cell Number</label>
+                    <input type="tel" class="form-control" id="customerCell" placeholder="082 123 4567" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="chickensOrdered" class="form-label">Chickens Ordered</label>
+                    <input type="number" class="form-control" id="chickensOrdered" min="1" placeholder="5" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="amountPaid" class="form-label">Amount Paid (R)</label>
+                    <input type="number" class="form-control" id="amountPaid" min="0" placeholder="0" required>
+                </div>
+
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-success w-100">Add Order</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+
+    <div class="card shadow-sm rounded">
+        <div class="card-body">
+            <h4 class="card-title text-success mb-4">Customer Orders</h4>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-bordered align-middle">
+                    <thead class="table-success">
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Location</th>
+                            <th>Cell Number</th>
+                            <th>Chickens Ordered</th>
+                            <th>Total Amount (R)</th>
+                            <th>Amount Paid (R)</th>
+                            <th>Outstanding (R)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>John Doe</td>
+                            <td>Johannesburg</td>
+                            <td>082 123 4567</td>
+                            <td>5</td>
+                            <td>600</td>
+                            <td>300</td>
+                            <td>300</td>
+                        </tr>
+                        <tr>
+                            <td>Mary Smith</td>
+                            <td>Pretoria</td>
+                            <td>083 987 6543</td>
+                            <td>3</td>
+                            <td>360</td>
+                            <td>360</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>James Khumalo</td>
+                            <td>Sandton</td>
+                            <td>084 555 1234</td>
+                            <td>2</td>
+                            <td>240</td>
+                            <td>120</td>
+                            <td>120</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+</html>
