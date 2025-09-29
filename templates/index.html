@@ -36,6 +36,8 @@
   </div>
 </nav>
 
+
+
     <div class="container mt-4">
     <h2 class="text-center mb-4">Dashboard</h2>
     <div class="row g-4">
@@ -61,8 +63,8 @@
         <div class="col-md-3">
             <div class="card text-white bg-success">
                 <div class="card-body">
-                    <h5 class="card-title">Total Orders</h5>
-                    <p class="card-text display-6 text-center">50</p>
+                    <h5 class="card-title">Live Chickens</h5>
+                    <p class="card-text display-6 text-center">195</p>
                 </div>
             </div>
         </div>
@@ -79,12 +81,44 @@
     </div>
 </div>
 
+
+
+<div class="container mt-5">
+    <h3>Add / Update Batch</h3>
+    <form id="batchForm" class="row g-3 mt-3">
+
+        
+        <div class="col-md-4">
+            <label for="batchDate" class="form-label">Batch Start Date</label>
+            <input type="date" class="form-control" id="batchDate" required>
+        </div>
+
+        
+        <div class="col-md-4">
+            <label for="chickBought" class="form-label">Chickens Bought</label>
+            <input type="number" class="form-control" id="chickBought" min="0" required>
+        </div>
+
+
+        <div class="col-md-4">
+            <label for="chickDead" class="form-label">Chickens Dead</label>
+            <input type="number" class="form-control" id="chickDead" min="0" value="0" required>
+        </div>
+
+    
+        <div class="col-12 mt-3">
+            <button type="submit" class="btn btn-success">Add / Update Batch</button>
+        </div>
+    </form>
+</div>
+
+
 <div class="container mt-5">
     <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>Current Batch Info</h3>
 
-        <!-- Month/Batch Dropdown -->
+        
         <div>
             <label for="batchSelect" class="form-label me-2">Select Batch:</label>
             <select class="form-select" id="batchSelect" style="width:auto; display:inline-block;">
