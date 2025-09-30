@@ -13,5 +13,11 @@ def home():
 def orders():
     return render_template('orders.html')
 
+@app.route('/expenses')
+def expenses():
+    return render_template('expenses.html')
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
