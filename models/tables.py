@@ -17,7 +17,8 @@ def db_init():
     cursor.execute('''CREATE TABLE IF NOT EXISTS expenses (
         id INTEGER PRIMARY KEY,
         expense_name TEXT NOT NULL,
-        expense_amount INTEGER NOT NULL
+        expense_amount INTEGER NOT NULL,
+        expense_date TEXT NOT NULL
     )''')
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS batch (

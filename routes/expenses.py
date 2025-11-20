@@ -6,8 +6,9 @@ expense_routes = Blueprint('expenses_routes', __name__)
 @expense_routes.route("/api/add-expense", methods=['POST'])
 def create_expense():
     data = request.get_json()
-    print(data)
     add_expense(expense_name=data['expense_name'],
-                expense_amount=data['expense_amount'])
+                expense_amount=data['expense_amount'],
+                expense_date=data['expense_date'])
     
-    return jsonify({"message": "Expense successfully added"})
+    return jsonify({"message": "Expense successfully added",
+                    'data':data})

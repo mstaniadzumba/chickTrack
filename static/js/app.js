@@ -1,12 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
     const expenseForm = document.getElementById("expenseForm");
+    const tableBody =  document.getElementById("expensesTableBody")
     if (expenseForm) {
         expenseForm.addEventListener("submit", function (e) {
             e.preventDefault();
 
             const payload = {
                 expense_name: document.getElementById("expenseDesc").value,
-                expense_amount: parseInt(document.getElementById("expenseAmount").value)
+                expense_amount: parseInt(document.getElementById("expenseAmount").value),
+                expense_date: document.getElementById("expenseDate").value
             };
 
             fetch("/api/add-expense", {
@@ -17,10 +19,33 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(res => res.json())
             .then(data => {
                 alert(data.message);
-                location.reload();
+                
+                 if (tableBody && data.data) {
+                    const newRow = document.createElement("tr");
+
+                    const descCell = document.createElement("td");
+                    descCell.textContent = data.data.expense_name;
+
+                    const amountCell = document.createElement("td");
+                    amountCell.textContent = data.data.expense_amount;
+
+                    const dateCell = document.createElement("td");
+                    dateCell.textContent = data.data.expense_date;
+
+                    newRow.appendChild(descCell);
+                    newRow.appendChild(amountCell);
+                    newRow.appendChild(dateCell);
+
+                    tableBody.appendChild(newRow);
+                    expenseForm.reset();
+                }
+
             })
             .catch(err => console.error("Add expense error:", err));
         });
     }
+
+
+    document.getElementById('expense-table')
 
 });
