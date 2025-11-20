@@ -8,7 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const payload = {
                 expense_name: document.getElementById("expenseDesc").value,
                 expense_amount: parseInt(document.getElementById("expenseAmount").value),
-                expense_date: document.getElementById("expenseDate").value
+                expense_date: document.getElementById("expenseDate").value,
+                comments:document.getElementById("comments").value
             };
 
             fetch("/api/add-expense", {
@@ -32,9 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     const dateCell = document.createElement("td");
                     dateCell.textContent = data.data.expense_date;
 
+                    const commentsCell = document.createElement("td");
+                    commentsCell.textContent = data.data.comments;
+
                     newRow.appendChild(descCell);
                     newRow.appendChild(amountCell);
                     newRow.appendChild(dateCell);
+                    newRow.appendChild(commentsCell)
 
                     tableBody.appendChild(newRow);
                     expenseForm.reset();

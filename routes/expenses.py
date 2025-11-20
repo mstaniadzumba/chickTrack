@@ -8,7 +8,8 @@ def create_expense():
     data = request.get_json()
     add_expense(expense_name=data['expense_name'],
                 expense_amount=data['expense_amount'],
-                expense_date=data['expense_date'])
+                expense_date=data['expense_date'],
+                comments=data['comments'])
     
     return jsonify({"message": "Expense successfully added",
                     'data':data})

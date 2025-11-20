@@ -18,7 +18,8 @@ def db_init():
         id INTEGER PRIMARY KEY,
         expense_name TEXT NOT NULL,
         expense_amount INTEGER NOT NULL,
-        expense_date TEXT NOT NULL
+        expense_date TEXT NOT NULL,
+        comments TEXT
     )''')
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS batch (
