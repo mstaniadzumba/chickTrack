@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const tableBody =  document.getElementById("expensesTableBody")
     if (expenseForm) {
         expenseForm.addEventListener("submit", function (e) {
-            e.preventDefault();
+            e.preventDefault();//lets you submit the data without losing formstate
 
             const payload = {
                 expense_name: document.getElementById("expenseDesc").value,
@@ -51,6 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    document.getElementById('expense-table')
+    //document.getElementById('expense-table')
 
 });

@@ -81,7 +81,7 @@
 
 
 <div class="container mt-5">
-    <h3>Add / Update Batch</h3>
+    <h3>Add Batch</h3>
     <form id="batchForm" class="row g-3 mt-3">
 
         
@@ -105,65 +105,26 @@
     
         <div class="col-12 mt-3">
             <button type="submit" class="btn btn-success">Add batch</button>
-            <button type="submit" class="btn btn-success">Update batch</button>
+            <!-- <button type="submit" class="btn btn-success">Update batch</button> -->
         </div>
     </form>
 </div>
 
-
-<div class="container mt-5">
-  <div class="bg-light p-4 rounded shadow-sm">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h3>Current Batch Info</h3>
-
-      <div>
-        <label for="batchSelect" class="form-label me-2">Select Batch:</label>
-        <select class="form-select" id="batchSelect" style="width:auto; display:inline-block;">
-          <option value="sep2025" selected>September 2025</option>
-          <option value="aug2025">August 2025</option>
-          <option value="jul2025">July 2025</option>
-        </select>
-      </div>
+<div class="container mt-3">
+    <div class="row g-3">
+        <div class="col-md-4">
+            <label for="batchSelect" class="form-label">Select Batch</label>
+            <select class="form-select" id="batchSelect">
+                <option value="sep2025" selected>September 2025</option>
+                <option value="aug2025">August 2025</option>
+                <option value="jul2025">July 2025</option>
+            </select>
+        </div>
     </div>
-
-    <div class="table-responsive">
-      <table class="table table-striped table-bordered" id="batchTable">
-        <thead class="table-success">
-          <tr>
-            <th>Month</th>
-            <th>Batch Start</th>
-            <th>Total Chickens</th>
-            <th>Chickens Dead</th>
-            <th>Current Week</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr data-batch="sep2025">
-            <td>September</td>
-            <td>2025-09-01</td>
-            <td>200</td>
-            <td>5</td>
-            <td>3</td>
-          </tr>
-          <tr data-batch="aug2025">
-            <td>August</td>
-            <td>2025-08-01</td>
-            <td>180</td>
-            <td>2</td>
-            <td>6</td>
-          </tr>
-          <tr data-batch="jul2025">
-            <td>July</td>
-            <td>2025-07-01</td>
-            <td>150</td>
-            <td>3</td>
-            <td>5</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
 </div>
+
+
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

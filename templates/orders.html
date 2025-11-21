@@ -46,36 +46,32 @@
 
                 <div class="col-md-4">
                     <label for="customerName" class="form-label">Customer Name</label>
-                    <input type="text" class="form-control" id="customerName" placeholder="John Doe" required>
+                    <input type="text" class="form-control" id="customerName" required>
                 </div>
 
                 <div class="col-md-4">
                     <label for="customerLocation" class="form-label">Location</label>
-                    <input type="text" class="form-control" id="customerLocation" placeholder="Johannesburg" required>
+                    <input type="text" class="form-control" id="customerLocation" required>
                 </div>
 
                 <div class="col-md-4">
                     <label for="customerCell" class="form-label">Cell Number</label>
-                    <input type="tel" class="form-control" id="customerCell" placeholder="082 123 4567" required>
+                    <input type="tel" class="form-control" id="customerCell" required>
                 </div>
 
                 <div class="col-md-3">
                     <label for="chickensOrdered" class="form-label">Chickens Ordered</label>
-                    <input type="number" class="form-control" id="chickensOrdered" min="1" placeholder="5" required>
+                    <input type="number" class="form-control" id="chickensOrdered" min="1" required>
                 </div>
 
                 <div class="col-md-3">
                     <label for="amountPaid" class="form-label">Amount Paid (R)</label>
-                    <input type="number" class="form-control" id="amountPaid" min="0" placeholder="0" required>
+                    <input type="number" class="form-control" id="amountPaid" min="0" required>
+        
                 </div>
 
-                <div class="col-md-3">
-                        <div>
-                            <button type="submit" class="btn btn-success w-100 mb-2" >Add Order</button>
-                        </div>
-                        <div>
-                            <button type="submit" class="btn btn-success w-100">Update Order</button>
-                        </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-success w-100 mb-2" >Add Order</button>
                 </div>
 
             </form>
@@ -99,34 +95,7 @@
                             <th>Outstanding (R)</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Tania</td>
-                            <td>Johannesburg</td>
-                            <td>082 123 4567</td>
-                            <td>5</td>
-                            <td>600</td>
-                            <td>300</td>
-                            <td>300</td>
-                        </tr>
-                        <tr>
-                            <td>Respect</td>
-                            <td>Phalama</td>
-                            <td>083 987 6543</td>
-                            <td>3</td>
-                            <td>360</td>
-                            <td>360</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <td>Uapfa</td>
-                            <td>Tshilamba</td>
-                            <td>084 555 1234</td>
-                            <td>2</td>
-                            <td>240</td>
-                            <td>120</td>
-                            <td>120</td>
-                        </tr>
+                    <tbody id="ordersTableBody">
                     </tbody>
                 </table>
             </div>
@@ -138,5 +107,6 @@
 
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename= 'js/orders.js') }}"></script>
 
 </html>

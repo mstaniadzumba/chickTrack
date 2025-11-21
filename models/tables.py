@@ -9,7 +9,9 @@ def db_init():
         id INTEGER PRIMARY KEY,
         customer_name TEXT NOT NULL,
         customer_location TEXT NOT NULL,
+        customer_cell TEXT NOT NULL,
         no_of_chickens INTEGER NOT NULL,
+        total_amount INTEGER NOT NULL,
         amount_paid INTEGER NOT NULL,
         outstanding_amount INTEGER NOT NULL
     )''')
