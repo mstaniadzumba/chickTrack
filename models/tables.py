@@ -13,7 +13,10 @@ def db_init():
         no_of_chickens INTEGER NOT NULL,
         total_amount INTEGER NOT NULL,
         amount_paid INTEGER NOT NULL,
-        outstanding_amount INTEGER NOT NULL
+        outstanding_amount INTEGER NOT NULL,
+        batch_id INTEGER,
+        order_date TEXT NOT NULL,
+        FOREIGN KEY (batch_id) REFERENCES batch(id)
     )''')
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS expenses (
@@ -21,7 +24,9 @@ def db_init():
         expense_name TEXT NOT NULL,
         expense_amount INTEGER NOT NULL,
         expense_date TEXT NOT NULL,
-        comments TEXT
+        comments TEXT,
+        batch_id INTEGER,
+        FOREIGN KEY (batch_id) REFERENCES batch(id)
     )''')
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS batch (
