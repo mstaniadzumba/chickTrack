@@ -41,8 +41,26 @@ def get_batch_by_id(batch_id):
     cursor.execute("SELECT * FROM batch WHERE id = ?", (batch_id,))
     batch = cursor.fetchone()
     
+    if batch:
+        # Calculate current week based on days since start
+        from datetime import datetime
+        start_date = datetime.strptime(batch['start_date'], '%Y-%m-%d')
+        current_date = datetime.now()
+        days_diff = (current_date - start_date).days
+        current_week = (days_diff // 7) + 1
+        
+        # Update the batch with calculated week
+        cursor.execute("UPDATE batch SET current_week = ? WHERE id = ?", (current_week, batch_id))
+        conn.commit()
+        
+        # Return updated batch data
+        batch_dict = dict(batch)
+        batch_dict['current_week'] = current_week
+        conn.close()
+        return batch_dict
+    
     conn.close()
-    return dict(batch) if batch else None
+    return None
 
 def update_batch_stats(batch_id, dead_chicken=None, current_week=None):
     conn = sqlite3.connect(config.DB_URL)

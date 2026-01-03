@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from models.tables import db_init
 from routes.expenses import expense_routes
 from routes.orders import order_routes
+from routes.dashboard import dashboard_routes
 
 app = Flask(__name__)
 
@@ -9,6 +10,7 @@ app = Flask(__name__)
 
 app.register_blueprint(expense_routes)
 app.register_blueprint(order_routes)
+app.register_blueprint(dashboard_routes)
 
 
 @app.route("/")
