@@ -36,7 +36,13 @@ class BatchManager {
 
     async populateDropdown(selectElement) {
         const batches = await this.loadBatches();
-        selectElement.innerHTML = '<option value="">Select a batch</option>';
+        // Clear all existing options first
+        selectElement.innerHTML = '';
+        
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Select a batch';
+        selectElement.appendChild(defaultOption);
         
         batches.forEach(batch => {
             const option = document.createElement('option');

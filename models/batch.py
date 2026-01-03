@@ -13,9 +13,9 @@ def add_batch(start_date, chickens_bought, dead_chicken=0, created_by=None):
     conn = sqlite3.connect(config.DB_URL)
     cursor = conn.cursor()
     
-    cursor.execute("""INSERT INTO batch (month, start_date, chickens_bought, dead_chicken, live_chicken, current_week, created_by, created_at)
-                   VALUES (?,?,?,?,?,?,?,?)""", 
-                   (month, start_date, chickens_bought, dead_chicken, live_chicken, 1, created_by, created_at))
+    cursor.execute("""INSERT INTO batch (month, start_date, chickens_bought, dead_chicken, live_chicken, created_by, created_at)
+                   VALUES (?,?,?,?,?,?,?)""", 
+                   (month, start_date, chickens_bought, dead_chicken, live_chicken, created_by, created_at))
     
     batch_id = cursor.lastrowid
     conn.commit()
@@ -50,11 +50,7 @@ def get_batch_by_id(batch_id):
         days_diff = (current_date - start_date).days
         current_week = (days_diff // 7) + 1
         
-        # Update the batch with calculated week
-        cursor.execute("UPDATE batch SET current_week = ? WHERE id = ?", (current_week, batch_id))
-        conn.commit()
-        
-        # Return updated batch data
+        # Return batch data with calculated week
         batch_dict = dict(batch)
         batch_dict['current_week'] = current_week
         conn.close()

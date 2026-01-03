@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify
 from models.batch import add_batch, get_all_batches, get_batch_by_id
 from models.orders import get_orders_by_batch
 from models.expenses import get_expenses_by_batch
+import sqlite3
+import config
 
 dashboard_routes = Blueprint('dashboard_routes', __name__)
 
@@ -15,6 +17,35 @@ def create_batch():
         created_by=data.get('created_by')
     )
     return jsonify({"message": "Batch added successfully", "batch_id": batch_id})
+
+@dashboard_routes.route("/api/update-batch/<int:batch_id>", methods=['PUT'])
+def update_batch(batch_id):
+    data = request.get_json()
+    
+    # Update batch in database
+    conn = sqlite3.connect(config.DB_URL)
+    cursor = conn.cursor()
+    
+    # Extract month-year from start_date for batch naming
+    from datetime import datetime
+    date_obj = datetime.strptime(data['start_date'], '%Y-%m-%d')
+    month = date_obj.strftime('%B %Y')
+    
+    live_chicken = data['chickens_bought'] - data.get('dead_chicken', 0)
+    updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    updated_by = data.get('created_by')
+    
+    cursor.execute("""
+        UPDATE batch SET 
+        month=?, start_date=?, chickens_bought=?, dead_chicken=?, live_chicken=?, updated_by=?, updated_at=?
+        WHERE id=?
+    """, (month, data['start_date'], data['chickens_bought'], data.get('dead_chicken', 0), 
+          live_chicken, updated_by, updated_at, batch_id))
+    
+    conn.commit()
+    conn.close()
+    
+    return jsonify({"message": "Batch updated successfully", "batch_id": batch_id})
 
 @dashboard_routes.route("/api/batches", methods=['GET'])
 def get_batches():

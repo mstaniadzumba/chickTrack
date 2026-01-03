@@ -44,7 +44,6 @@ def db_init():
         chickens_bought INTEGER NOT NULL,
         dead_chicken INTEGER NOT NULL,
         live_chicken INTEGER NOT NULL,
-        current_week INTEGER NOT NULL,
         created_by TEXT,
         created_at TEXT,
         updated_by TEXT,

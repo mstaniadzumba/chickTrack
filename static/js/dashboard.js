@@ -22,6 +22,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('batchForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const isUpdate = submitBtn.dataset.mode === 'update';
+        const batchId = submitBtn.dataset.batchId;
+        
         const formData = {
             start_date: document.getElementById('batchDate').value,
             chickens_bought: parseInt(document.getElementById('chickBought').value),
@@ -29,26 +33,42 @@ document.addEventListener('DOMContentLoaded', function() {
             created_by: JSON.parse(localStorage.getItem('currentUser') || '{}').name || 'Unknown'
         };
         
+        const url = isUpdate ? `/api/update-batch/${batchId}` : '/api/add-batch';
+        const method = isUpdate ? 'PUT' : 'POST';
+        
         try {
-            const response = await fetch('/api/add-batch', {
-                method: 'POST',
+            const response = await fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
             
             const result = await response.json();
-            alert('Batch added successfully!');
             
-            // Reload batches and select the new one
+            if (isUpdate) {
+                alert('Batch updated successfully!');
+                // Reset form to add mode
+                submitBtn.textContent = 'Add batch';
+                delete submitBtn.dataset.mode;
+                delete submitBtn.dataset.batchId;
+                // Reload dashboard data
+                loadDashboardData(batchId);
+            } else {
+                alert('Batch added successfully!');
+                // Set current batch to new one
+                batchManager.setCurrentBatch(result.batch_id);
+                loadDashboardData(result.batch_id);
+            }
+            
+            // Reload batches and update dropdown
+            await batchManager.loadBatches();
             await batchManager.populateDropdown(batchSelect);
-            batchManager.setCurrentBatch(result.batch_id);
-            batchSelect.value = result.batch_id;
-            loadDashboardData(result.batch_id);
+            batchSelect.value = isUpdate ? batchId : result.batch_id;
             
             this.reset();
         } catch (error) {
-            console.error('Error adding batch:', error);
-            alert('Error adding batch');
+            console.error('Error with batch:', error);
+            alert('Error with batch');
         }
     });
 
