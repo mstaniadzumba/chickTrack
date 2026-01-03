@@ -2,18 +2,19 @@ import config
 import sqlite3
 from datetime import datetime
 
-def add_order(customer_name, customer_location, customer_cell, no_of_chickens, amount_paid=0, batch_id=None):
+def add_order(customer_name, customer_location, customer_cell, no_of_chickens, amount_paid=0, batch_id=None, created_by=None):
     total_price = 120 * no_of_chickens
     outstanding_amount = total_price - amount_paid
     order_date = datetime.now().strftime('%Y-%m-%d')
+    created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     conn = sqlite3.connect(config.DB_URL)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    cursor.execute(""" INSERT INTO orders (customer_name, customer_cell, customer_location, no_of_chickens,total_amount, amount_paid, outstanding_amount, batch_id, order_date)
-                   VALUES (?,?,?,?,?,?,?,?,?)
-                   """, (customer_name,customer_cell,customer_location, no_of_chickens, total_price,amount_paid, outstanding_amount, batch_id, order_date))
+    cursor.execute(""" INSERT INTO orders (customer_name, customer_cell, customer_location, no_of_chickens,total_amount, amount_paid, outstanding_amount, batch_id, order_date, created_by, created_at)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?)
+                   """, (customer_name,customer_cell,customer_location, no_of_chickens, total_price,amount_paid, outstanding_amount, batch_id, order_date, created_by, created_at))
     
     new_id = cursor.lastrowid
 

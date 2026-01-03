@@ -16,6 +16,10 @@ def db_init():
         outstanding_amount INTEGER NOT NULL,
         batch_id INTEGER,
         order_date TEXT NOT NULL,
+        created_by TEXT,
+        created_at TEXT,
+        updated_by TEXT,
+        updated_at TEXT,
         FOREIGN KEY (batch_id) REFERENCES batch(id)
     )''')
 
@@ -26,6 +30,10 @@ def db_init():
         expense_date TEXT NOT NULL,
         comments TEXT,
         batch_id INTEGER,
+        created_by TEXT,
+        created_at TEXT,
+        updated_by TEXT,
+        updated_at TEXT,
         FOREIGN KEY (batch_id) REFERENCES batch(id)
     )''')
 
@@ -36,7 +44,11 @@ def db_init():
         chickens_bought INTEGER NOT NULL,
         dead_chicken INTEGER NOT NULL,
         live_chicken INTEGER NOT NULL,
-        current_week INTEGER NOT NULL
+        current_week INTEGER NOT NULL,
+        created_by TEXT,
+        created_at TEXT,
+        updated_by TEXT,
+        updated_at TEXT
     )''')
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS users (

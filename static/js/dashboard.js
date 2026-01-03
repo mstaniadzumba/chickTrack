@@ -25,7 +25,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = {
             start_date: document.getElementById('batchDate').value,
             chickens_bought: parseInt(document.getElementById('chickBought').value),
-            dead_chicken: parseInt(document.getElementById('chickDead').value)
+            dead_chicken: parseInt(document.getElementById('chickDead').value),
+            created_by: JSON.parse(localStorage.getItem('currentUser') || '{}').name || 'Unknown'
         };
         
         try {

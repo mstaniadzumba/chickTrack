@@ -60,6 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const outstandingCell = document.createElement("td")
         outstandingCell.textContent = orderData.outstanding_amount
 
+        const createdByCell = document.createElement("td")
+        createdByCell.textContent = orderData.created_by || 'Unknown'
+
         const actionsCell = document.createElement("td")
         const updateBtn = document.createElement("button")
         updateBtn.className = "btn btn-sm btn-warning"
@@ -74,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         newRow.appendChild(totalAmountCell)
         newRow.appendChild(amountPaidCell)
         newRow.appendChild(outstandingCell)
+        newRow.appendChild(createdByCell)
         newRow.appendChild(actionsCell)
 
         tableBody.appendChild(newRow)
@@ -82,17 +86,25 @@ document.addEventListener('DOMContentLoaded', () => {
     orderForm.addEventListener("submit", function (e) {
         e.preventDefault();
 
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const isUpdate = submitBtn.dataset.mode === 'update';
+        const orderId = submitBtn.dataset.orderId;
+
         const payload = {
             customer_name: document.getElementById("customerName").value,
             customer_location: document.getElementById("customerLocation").value,
             customer_cell: document.getElementById("customerCell").value,
             chickens_ordered: parseInt(document.getElementById("chickensOrdered").value),
             amount_paid: parseInt(document.getElementById("amountPaid").value),
-            batch_id: batchManager.getCurrentBatch()
+            batch_id: batchManager.getCurrentBatch(),
+            created_by: JSON.parse(localStorage.getItem('currentUser') || '{}').name || 'Unknown'
         };
 
-        fetch("/api/add-order", {
-            method: "POST",
+        const url = isUpdate ? `/api/update-order/${orderId}` : "/api/add-order";
+        const method = isUpdate ? "PUT" : "POST";
+
+        fetch(url, {
+            method: method,
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(payload)
         })
@@ -100,13 +112,22 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             alert(data.message);
             if (data.data) {
-                addOrderToTable(data.data);
+                if (isUpdate) {
+                    // Reload the orders to show updated data
+                    loadOrders(batchManager.getCurrentBatch());
+                    // Reset form
+                    submitBtn.textContent = 'Add Order';
+                    delete submitBtn.dataset.mode;
+                    delete submitBtn.dataset.orderId;
+                } else {
+                    addOrderToTable(data.data);
+                }
                 orderForm.reset();
             }
         })
         .catch(error => {
-            console.error('Error adding order:', error);
-            alert('Error adding order');
+            console.error('Error with order:', error);
+            alert('Error with order');
         });
     });
 

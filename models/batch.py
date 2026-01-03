@@ -2,19 +2,20 @@ import config
 import sqlite3
 from datetime import datetime
 
-def add_batch(start_date, chickens_bought, dead_chicken=0):
+def add_batch(start_date, chickens_bought, dead_chicken=0, created_by=None):
     # Extract month-year from start_date for batch naming
     date_obj = datetime.strptime(start_date, '%Y-%m-%d')
     month = date_obj.strftime('%B %Y')  # e.g., "September 2025"
     
     live_chicken = chickens_bought - dead_chicken
+    created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
     conn = sqlite3.connect(config.DB_URL)
     cursor = conn.cursor()
     
-    cursor.execute("""INSERT INTO batch (month, start_date, chickens_bought, dead_chicken, live_chicken, current_week)
-                   VALUES (?,?,?,?,?,?)""", 
-                   (month, start_date, chickens_bought, dead_chicken, live_chicken, 1))
+    cursor.execute("""INSERT INTO batch (month, start_date, chickens_bought, dead_chicken, live_chicken, current_week, created_by, created_at)
+                   VALUES (?,?,?,?,?,?,?,?)""", 
+                   (month, start_date, chickens_bought, dead_chicken, live_chicken, 1, created_by, created_at))
     
     batch_id = cursor.lastrowid
     conn.commit()

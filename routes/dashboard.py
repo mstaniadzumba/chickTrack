@@ -11,7 +11,8 @@ def create_batch():
     batch_id = add_batch(
         start_date=data['start_date'],
         chickens_bought=data['chickens_bought'],
-        dead_chicken=data.get('dead_chicken', 0)
+        dead_chicken=data.get('dead_chicken', 0),
+        created_by=data.get('created_by')
     )
     return jsonify({"message": "Batch added successfully", "batch_id": batch_id})
 

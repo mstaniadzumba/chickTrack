@@ -51,6 +51,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const commentsCell = document.createElement("td");
         commentsCell.textContent = expenseData.comments || '';
 
+        const createdByCell = document.createElement("td");
+        createdByCell.textContent = expenseData.created_by || 'Unknown';
+
         const actionsCell = document.createElement("td");
         const updateBtn = document.createElement("button");
         updateBtn.className = "btn btn-sm btn-warning";
@@ -62,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         newRow.appendChild(amountCell);
         newRow.appendChild(dateCell);
         newRow.appendChild(commentsCell);
+        newRow.appendChild(createdByCell);
         newRow.appendChild(actionsCell);
 
         tableBody.appendChild(newRow);
@@ -71,28 +75,54 @@ document.addEventListener("DOMContentLoaded", () => {
         expenseForm.addEventListener("submit", function (e) {
             e.preventDefault();
 
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const isUpdate = submitBtn.dataset.mode === 'update';
+            const expenseId = submitBtn.dataset.expenseId;
+
             const payload = {
                 expense_name: document.getElementById("expenseDesc").value,
                 expense_amount: parseInt(document.getElementById("expenseAmount").value),
                 expense_date: document.getElementById("expenseDate").value,
                 comments: document.getElementById("comments").value,
-                batch_id: batchManager.getCurrentBatch()
+                batch_id: batchManager.getCurrentBatch(),
+                created_by: JSON.parse(localStorage.getItem('currentUser') || '{}').name || 'Unknown'
             };
 
-            fetch("/api/add-expense", {
-                method: "POST",
+            const url = isUpdate ? `/api/update-expense/${expenseId}` : "/api/add-expense";
+            const method = isUpdate ? "PUT" : "POST";
+
+            fetch(url, {
+                method: method,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             })
-            .then(res => res.json())
+            .then(res => {
+                console.log('Response status:', res.status);
+                return res.json();
+            })
             .then(data => {
+                console.log('Response data:', data);
                 alert(data.message);
                 if (data.data) {
-                    addExpenseToTable(data.data);
-                    expenseForm.reset();
+                    if (isUpdate) {
+                        console.log('Reloading expenses after update');
+                        // Reload expenses to show updated data
+                        loadExpenses(batchManager.getCurrentBatch());
+                        // Reset form
+                        submitBtn.textContent = 'Add Expense';
+                        delete submitBtn.dataset.mode;
+                        delete submitBtn.dataset.expenseId;
+                        expenseForm.reset();
+                    } else {
+                        addExpenseToTable(data.data);
+                        expenseForm.reset();
+                    }
                 }
             })
-            .catch(err => console.error("Add expense error:", err));
+            .catch(err => {
+                console.error("Expense error:", err);
+                alert('Error updating expense');
+            });
         });
     }
 

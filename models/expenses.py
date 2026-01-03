@@ -3,13 +3,16 @@ import sqlite3
 
 
 
-def add_expense(expense_name, expense_amount, expense_date, comments=None, batch_id=None):
+def add_expense(expense_name, expense_amount, expense_date, comments=None, batch_id=None, created_by=None):
+    from datetime import datetime
+    created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
     conn = sqlite3.connect(config.DB_URL)
     cursor = conn.cursor()
 
-    cursor.execute(""" INSERT INTO expenses (expense_name, expense_amount, expense_date, comments, batch_id)
-                   VALUES (?,?,?,?,?)
-                   """, (expense_name, expense_amount, expense_date, comments, batch_id))
+    cursor.execute(""" INSERT INTO expenses (expense_name, expense_amount, expense_date, comments, batch_id, created_by, created_at)
+                   VALUES (?,?,?,?,?,?,?)
+                   """, (expense_name, expense_amount, expense_date, comments, batch_id, created_by, created_at))
     conn.commit()
     conn.close()
 
