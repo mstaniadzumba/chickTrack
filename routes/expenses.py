@@ -62,12 +62,15 @@ def update_expense(expense_id):
         print(f"Found existing expense: {dict(existing)}")
         
         # Simple update without tracking columns first
+        updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        updated_by = data.get('created_by')  # This is actually the current user updating
+        
         cursor.execute("""
             UPDATE expenses SET 
-            expense_name=?, expense_amount=?, expense_date=?, comments=?
+            expense_name=?, expense_amount=?, expense_date=?, comments=?, updated_by=?, updated_at=?
             WHERE id=?
         """, (data['expense_name'], data['expense_amount'], data['expense_date'], 
-              data.get('comments', ''), expense_id))
+              data.get('comments', ''), updated_by, updated_at, expense_id))
         
         print(f"Updated {cursor.rowcount} rows")
         

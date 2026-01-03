@@ -63,6 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const createdByCell = document.createElement("td")
         createdByCell.textContent = orderData.created_by || 'Unknown'
 
+        const updatedByCell = document.createElement("td")
+        updatedByCell.textContent = orderData.updated_by || '-'
+
         const actionsCell = document.createElement("td")
         const updateBtn = document.createElement("button")
         updateBtn.className = "btn btn-sm btn-warning"
@@ -78,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         newRow.appendChild(amountPaidCell)
         newRow.appendChild(outstandingCell)
         newRow.appendChild(createdByCell)
+        newRow.appendChild(updatedByCell)
         newRow.appendChild(actionsCell)
 
         tableBody.appendChild(newRow)

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChickTrack</title>
+</head>
+<body>
+    <script>
+        // Check if user is logged in
+        const currentUser = localStorage.getItem('currentUser');
+        
+        if (currentUser) {
+            // User is logged in, redirect to dashboard
+            window.location.href = '/dashboard';
+        } else {
+            // User not logged in, redirect to register
+            window.location.href = '/register';
+        }
+    </script>
+</body>
+</html>
