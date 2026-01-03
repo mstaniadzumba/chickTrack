@@ -3,6 +3,7 @@ from models.tables import db_init
 from routes.expenses import expense_routes
 from routes.orders import order_routes
 from routes.dashboard import dashboard_routes
+from routes.auth import auth_routes
 
 app = Flask(__name__)
 
@@ -11,11 +12,24 @@ app = Flask(__name__)
 app.register_blueprint(expense_routes)
 app.register_blueprint(order_routes)
 app.register_blueprint(dashboard_routes)
+app.register_blueprint(auth_routes)
 
 
 @app.route("/")
 def home():
+    return render_template("register.html")
+
+@app.route("/dashboard")
+def dashboard():
     return render_template("index.html")
+
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+@app.route("/register")
+def register():
+    return render_template("register.html")
 
 @app.route("/orders")
 def show_orders():

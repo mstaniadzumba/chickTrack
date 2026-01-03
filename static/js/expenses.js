@@ -51,10 +51,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const commentsCell = document.createElement("td");
         commentsCell.textContent = expenseData.comments || '';
 
+        const actionsCell = document.createElement("td");
+        const updateBtn = document.createElement("button");
+        updateBtn.className = "btn btn-sm btn-warning";
+        updateBtn.textContent = "Update";
+        updateBtn.onclick = () => updateExpense(expenseData);
+        actionsCell.appendChild(updateBtn);
+
         newRow.appendChild(descCell);
         newRow.appendChild(amountCell);
         newRow.appendChild(dateCell);
         newRow.appendChild(commentsCell);
+        newRow.appendChild(actionsCell);
 
         tableBody.appendChild(newRow);
     }
@@ -86,5 +94,19 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(err => console.error("Add expense error:", err));
         });
+    }
+
+    function updateExpense(expenseData) {
+        // Populate form with existing data
+        document.getElementById("expenseDesc").value = expenseData.expense_name;
+        document.getElementById("expenseAmount").value = expenseData.expense_amount;
+        document.getElementById("expenseDate").value = expenseData.expense_date;
+        document.getElementById("comments").value = expenseData.comments || '';
+        
+        // Change form to update mode
+        const submitBtn = document.querySelector('#expenseForm button[type="submit"]');
+        submitBtn.textContent = 'Update Expense';
+        submitBtn.dataset.mode = 'update';
+        submitBtn.dataset.expenseId = expenseData.id;
     }
 });

@@ -39,6 +39,13 @@ def db_init():
         current_week INTEGER NOT NULL
     )''')
 
+    cursor.execute('''CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL,
+        phone TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL
+    )''')
+
     conn.commit()
     conn.close()
 
