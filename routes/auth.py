@@ -1,22 +1,14 @@
 from flask import Blueprint, request, jsonify
 from models.users import register_user, login_user
+import os
 
 auth_routes = Blueprint('auth_routes', __name__)
 
+register_user(os.environ.get("ADMIN"), os.environ.get("PHONE"), os.environ.get("APP_PASSWORD"))
+
 @auth_routes.route("/api/register", methods=['POST'])
 def register():
-    data = request.get_json()
-    
-    success = register_user(
-        name=data['name'],
-        phone=data['phone'],
-        password=data['password']
-    )
-    
-    if success:
-        return jsonify({"message": "Registration successful"})
-    else:
-        return jsonify({"message": "Phone number already exists"}), 400
+    return jsonify({"message": "Registration disabled"}), 403
 
 @auth_routes.route("/api/login", methods=['POST'])
 def login():
