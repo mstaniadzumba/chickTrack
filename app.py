@@ -4,8 +4,12 @@ from routes.expenses import expense_routes
 from routes.orders import order_routes
 from routes.dashboard import dashboard_routes
 from routes.auth import auth_routes
+from routes.auth import create_admin_user
 
 app = Flask(__name__)
+db_init()
+create_admin_user()
+
 
 #Register API routes
 

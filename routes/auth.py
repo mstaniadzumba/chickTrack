@@ -4,7 +4,7 @@ import os
 
 auth_routes = Blueprint('auth_routes', __name__)
 
-register_user(os.environ.get("ADMIN"), os.environ.get("PHONE"), os.environ.get("APP_PASSWORD"))
+# register_user(os.environ.get("ADMIN"), os.environ.get("PHONE"), os.environ.get("APP_PASSWORD"))
 
 @auth_routes.route("/api/register", methods=['POST'])
 def register():
@@ -26,3 +26,11 @@ def login():
         })
     else:
         return jsonify({"message": "Invalid credentials"}), 401
+    
+def create_admin_user():
+    admin = os.environ.get("ADMIN")
+    phone = os.environ.get("PHONE")
+    password = os.environ.get("APP_PASSWORD")
+
+    if admin and phone and password:
+        register_user(admin, phone, password)
