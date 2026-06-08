@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChickTrack - Expenses</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/static/images/chick.png">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/chick.png') }}">
 </head>
 <body class="bg-success-subtle">
 
-    
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('home') }}">ChickTrack 🐥</a>
@@ -18,7 +18,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item">
                         <a class="nav-link" href="/dashboard">Home</a>
                     </li>
@@ -27,6 +27,18 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ url_for('expenses') }}">Expenses</a>
+                    </li>
+                    {% if user.is_admin %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('manage_users') }}">Manage Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('history') }}">History</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item ms-lg-3 text-white-50 small">Hi, {{ user.name }}</li>
+                    <li class="nav-item ms-lg-2">
+                        <button id="logoutBtn" class="btn btn-sm btn-light">Log out</button>
                     </li>
                 </ul>
             </div>
@@ -45,11 +57,15 @@
         </div>
     </div>
 
-    
+
     <div class="container mt-5">
 
-        
-        <div class="card shadow-sm rounded mb-5">
+        <!-- Shown when there are no batches yet -->
+        <div id="noBatchMsg" class="alert alert-warning d-none">
+            No batches yet. Please add a batch on the Home page before adding expenses.
+        </div>
+
+        <div id="expenseFormCard" class="card shadow-sm rounded mb-5">
             <div class="card-body bg-light">
                 <h4 class="card-title text-success mb-4">Add New Expense</h4>
                 <form id="expenseForm" class="row g-3">
@@ -63,7 +79,7 @@
                         <label for="expenseAmount" class="form-label">Amount Spent (R)</label>
                         <input type="number" class="form-control" id="expenseAmount" min="0" placeholder="0" required>
                     </div>
-        
+
                     <div class="col-md-4">
                         <label for="expenseDate" class="form-label">Expense Date</label>
                         <input type="date" class="form-control" id="expenseDate" required>
@@ -82,12 +98,12 @@
             </div>
         </div>
 
-        
+
         <div class="card shadow-sm rounded">
             <div class="card-body">
                 <h4 class="card-title text-success mb-4">Expenses</h4>
                 <div class="table-responsive">
-                    <table id="'expense-table" class="table table-striped table-hover table-bordered align-middle">
+                    <table id="expense-table" class="table table-striped table-hover table-bordered align-middle">
                         <thead class="table-success">
                             <tr>
                                 <th>Description</th>
@@ -108,11 +124,11 @@
 
     </div>
 
+    <script>
+        window.CURRENT_USER = {{ user | tojson }};
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/batchManager.js') }}"></script>
     <script src="{{ url_for('static', filename='js/expenses.js') }}"></script>
 </body>
-
-
-
 </html>

@@ -1,10 +1,13 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const orderForm = document.getElementById("orderForm")
+    const orderFormCard = document.getElementById("orderFormCard")
+    const noBatchMsg = document.getElementById("noBatchMsg")
     const tableBody = document.getElementById("ordersTableBody")
     const batchSelect = document.getElementById("batchSelect")
 
     // Initialize batch dropdown and load orders
-    batchManager.populateDropdownWithAll(batchSelect, 'All Orders');
+    await batchManager.populateDropdownWithAll(batchSelect, 'All Orders');
+    updateBatchGuard();
     loadOrders(batchManager.getCurrentBatch());
 
     // Handle batch selection change
@@ -20,11 +23,25 @@ document.addEventListener('DOMContentLoaded', () => {
         loadOrders(event.detail.batchId);
     });
 
+    function updateBatchGuard() {
+        // No batches at all -> can't add orders.
+        if (!batchManager.hasBatches()) {
+            if (noBatchMsg) noBatchMsg.classList.remove('d-none');
+            if (orderFormCard) orderFormCard.classList.add('d-none');
+        } else {
+            if (noBatchMsg) noBatchMsg.classList.add('d-none');
+            if (orderFormCard) orderFormCard.classList.remove('d-none');
+        }
+    }
+
     function loadOrders(batchId = null) {
         const url = batchId ? `/api/orders?batch_id=${batchId}` : '/api/orders';
-        
+
         fetch(url)
-        .then(res => res.json())
+        .then(res => {
+            if (res.status === 401) { window.location.href = '/login'; return []; }
+            return res.json();
+        })
         .then(orders => {
             tableBody.innerHTML = '';
             orders.forEach(order => {
@@ -38,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addOrderToTable(orderData) {
         const newRow = document.createElement("tr")
-        
+
         const nameCell = document.createElement("td")
         nameCell.textContent = orderData.customer_name
 
@@ -49,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         numberCell.textContent = orderData.customer_cell
 
         const chickensCell = document.createElement("td")
-        chickensCell.textContent = orderData.no_of_chickens 
+        chickensCell.textContent = orderData.no_of_chickens
 
         const totalAmountCell = document.createElement("td")
         totalAmountCell.textContent = orderData.total_amount
@@ -67,11 +84,30 @@ document.addEventListener('DOMContentLoaded', () => {
         updatedByCell.textContent = orderData.updated_by || '-'
 
         const actionsCell = document.createElement("td")
-        const updateBtn = document.createElement("button")
-        updateBtn.className = "btn btn-sm btn-warning"
-        updateBtn.textContent = "Update"
-        updateBtn.onclick = () => updateOrder(orderData)
-        actionsCell.appendChild(updateBtn)
+
+        if (orderData.is_deleted) {
+            // Crossed-out record: show it, but no editing. Explain who/why on hover.
+            newRow.classList.add("text-muted")
+            newRow.style.textDecoration = "line-through"
+            newRow.title = `Deleted by ${orderData.deleted_by || 'someone'}`
+                + (orderData.deleted_reason ? `: ${orderData.deleted_reason}` : '')
+            actionsCell.textContent = "Deleted"
+        } else {
+            const updateBtn = document.createElement("button")
+            updateBtn.className = "btn btn-sm btn-warning"
+            updateBtn.textContent = "Update"
+            updateBtn.onclick = () => updateOrder(orderData)
+            actionsCell.appendChild(updateBtn)
+
+            // Only the admin can delete, and a reason is always required.
+            if (window.isAdmin && window.isAdmin()) {
+                const deleteBtn = document.createElement("button")
+                deleteBtn.className = "btn btn-sm btn-danger ms-1"
+                deleteBtn.textContent = "Delete"
+                deleteBtn.onclick = () => deleteOrder(orderData)
+                actionsCell.appendChild(deleteBtn)
+            }
+        }
 
         newRow.appendChild(nameCell)
         newRow.appendChild(locationCell)
@@ -94,14 +130,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const isUpdate = submitBtn.dataset.mode === 'update';
         const orderId = submitBtn.dataset.orderId;
 
+        const batchId = batchManager.getCurrentBatch();
+        if (!isUpdate && !batchId) {
+            alert('Please select a batch first (top of the page) before adding an order.');
+            return;
+        }
+
         const payload = {
             customer_name: document.getElementById("customerName").value,
             customer_location: document.getElementById("customerLocation").value,
             customer_cell: document.getElementById("customerCell").value,
             chickens_ordered: parseInt(document.getElementById("chickensOrdered").value),
             amount_paid: parseInt(document.getElementById("amountPaid").value),
-            batch_id: batchManager.getCurrentBatch(),
-            created_by: JSON.parse(localStorage.getItem('currentUser') || '{}').name || 'Unknown'
+            batch_id: batchId
         };
 
         const url = isUpdate ? `/api/update-order/${orderId}` : "/api/add-order";
@@ -112,22 +153,21 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(payload)
         })
-        .then(res => res.json())
-        .then(data => {
+        .then(res => res.json().then(data => ({ ok: res.ok, data })))
+        .then(({ ok, data }) => {
             alert(data.message);
-            if (data.data) {
-                if (isUpdate) {
-                    // Reload the orders to show updated data
-                    loadOrders(batchManager.getCurrentBatch());
-                    // Reset form
-                    submitBtn.textContent = 'Add Order';
-                    delete submitBtn.dataset.mode;
-                    delete submitBtn.dataset.orderId;
-                } else {
-                    addOrderToTable(data.data);
-                }
-                orderForm.reset();
+            if (!ok) return;
+
+            if (isUpdate) {
+                loadOrders(batchManager.getCurrentBatch());
+                submitBtn.textContent = 'Add Order';
+                delete submitBtn.dataset.mode;
+                delete submitBtn.dataset.orderId;
+            } else {
+                // Reload so the table reflects the current batch filter.
+                loadOrders(batchManager.getCurrentBatch());
             }
+            orderForm.reset();
         })
         .catch(error => {
             console.error('Error with order:', error);
@@ -136,17 +176,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function updateOrder(orderData) {
-        // Populate form with existing data
         document.getElementById("customerName").value = orderData.customer_name;
         document.getElementById("customerLocation").value = orderData.customer_location;
         document.getElementById("customerCell").value = orderData.customer_cell;
         document.getElementById("chickensOrdered").value = orderData.no_of_chickens;
         document.getElementById("amountPaid").value = orderData.amount_paid;
-        
-        // Change form to update mode
+
         const submitBtn = document.querySelector('#orderForm button[type="submit"]');
         submitBtn.textContent = 'Update Order';
         submitBtn.dataset.mode = 'update';
         submitBtn.dataset.orderId = orderData.id;
+    }
+
+    function deleteOrder(orderData) {
+        if (!confirm(`Are you sure you want to delete ${orderData.customer_name}'s order?\n\nThe record will be crossed out and will no longer be counted.`)) {
+            return;
+        }
+        const reason = prompt(`Why are you deleting ${orderData.customer_name}'s order? (required)`);
+        if (reason === null) return;            // cancelled
+        if (!reason.trim()) {
+            alert('A reason is required to delete.');
+            return;
+        }
+
+        fetch(`/api/delete-order/${orderData.id}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ reason: reason.trim() })
+        })
+        .then(res => res.json().then(data => ({ ok: res.ok, data })))
+        .then(({ ok, data }) => {
+            alert(data.message);
+            if (ok) loadOrders(batchManager.getCurrentBatch());
+        })
+        .catch(error => {
+            console.error('Error deleting order:', error);
+            alert('Error deleting order');
+        });
     }
 });
